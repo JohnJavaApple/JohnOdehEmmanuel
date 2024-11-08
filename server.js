@@ -1,3 +1,4 @@
+require('dotenv').config();  // Load environment variables from .env file
 const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
@@ -6,35 +7,41 @@ const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = "your_jwt_secret"; // Replace with a secure secret in production
+const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret"; // Use environment variable
 
 // Middleware
 app.use(express.json());
-app.use(cors());
 
-// MongoDB connection (replace <your_mongo_uri> with your MongoDB URI)
-mongoose.connect("<your_mongo_uri>", { useNewUrlParser: true, useUnifiedTopology: true })
+// Enable CORS for Netlify (replace `your-netlify-site.netlify.app` with your actual Netlify domain)
+const corsOptions = {
+  origin: "https://johnodehemmanuel.netlify.app", // Replace with your frontend domain
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
+
+// MongoDB connection (replace <your_mongo_uri> with your MongoDB URI in an environment variable)
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// User Schema
+// User Schema and model
 const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
 });
 const User = mongoose.model("User", userSchema);
 
-// Task Schema
+// Task Schema and model
 const taskSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: String,
   deadline: Date,
   priority: { type: String, enum: ["low", "medium", "high"], default: "low" },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 });
 const Task = mongoose.model("Task", taskSchema);
 
-// User Registration
+// User Registration Route
 app.post("/auth/register", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -46,7 +53,7 @@ app.post("/auth/register", async (req, res) => {
   }
 });
 
-// User Login
+// User Login Route
 app.post("/auth/login", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -75,7 +82,7 @@ const authenticate = (req, res, next) => {
   }
 };
 
-// Get All Tasks for Authenticated User
+// Task Routes
 app.get("/tasks", authenticate, async (req, res) => {
   try {
     const tasks = await Task.find({ userId: req.userId });
@@ -85,7 +92,6 @@ app.get("/tasks", authenticate, async (req, res) => {
   }
 });
 
-// Create New Task
 app.post("/tasks", authenticate, async (req, res) => {
   const { title, description, deadline, priority } = req.body;
   try {
@@ -96,7 +102,6 @@ app.post("/tasks", authenticate, async (req, res) => {
   }
 });
 
-// Update a Task
 app.put("/tasks/:id", authenticate, async (req, res) => {
   const { id } = req.params;
   const { title, description, deadline, priority } = req.body;
@@ -113,7 +118,6 @@ app.put("/tasks/:id", authenticate, async (req, res) => {
   }
 });
 
-// Delete a Task
 app.delete("/tasks/:id", authenticate, async (req, res) => {
   const { id } = req.params;
   try {
