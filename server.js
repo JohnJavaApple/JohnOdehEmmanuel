@@ -12,7 +12,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret"; // Use environme
 // Middleware
 app.use(express.json());
 
-// Enable CORS for Netlify (replace `your-netlify-site.netlify.app` with your actual Netlify domain)
+// Enable CORS for Netlify app
 const corsOptions = {
   origin: "https://johnodehemmanuel.netlify.app", // Replace with your frontend domain
   optionsSuccessStatus: 200,
