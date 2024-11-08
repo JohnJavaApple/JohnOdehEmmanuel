@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskMaster - Task Management System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>TaskMaster</h1>
+    <p>Organize your tasks efficiently and stay on top of deadlines!</p>
+  </header>
+
+  <section id="auth-section">
+    <h2>Login / Register</h2>
+    <input id="email" type="email" placeholder="Enter Email">
+    <input id="password" type="password" placeholder="Enter Password">
+    <button onclick="registerUser()">Register</button>
+    <button onclick="loginUser()">Login</button>
+    <div id="auth-message"></div>
+  </section>
+
+  <section id="task-section" class="hidden">
+    <h2>Your Tasks</h2>
+    <div id="new-task-form">
+      <input id="task-title" type="text" placeholder="Task Title">
+      <textarea id="task-desc" placeholder="Task Description"></textarea>
+      <input id="task-deadline" type="date">
+      <select id="task-priority">
+        <option value="low">Low Priority</option>
+        <option value="medium">Medium Priority</option>
+        <option value="high">High Priority</option>
+      </select>
+      <button onclick="addTask()">Add Task</button>
+    </div>
+    <div id="task-list"></div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
