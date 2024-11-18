@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://example-backend.com/api"; // Replace with actual backend URL when deployed
+const API_BASE_URL = "https://johnodehemmanuel.netlify.app/api";
 
 // Toggle display of sections
 function showTaskSection() {
